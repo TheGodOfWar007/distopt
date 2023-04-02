@@ -42,10 +42,10 @@ fi
 
 # Install gtest
 if [ ! -d "/shared/googletest" ]; then
-  wget https://github.com/google/googletest/archive/refs/tags/release-1.10.0.zip
-  unzip release-1.10.0.zip
-  rm release-1.10.0.zip
-  mv googletest-release-1.10.0 googletest
+  wget https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
+  unzip release-1.11.0.zip
+  rm release-1.11.0.zip
+  mv googletest-release-1.11.0 googletest
   cd /shared/googletest
   mkdir build && cd build
   cmake .. -DCMAKE_INSTALL_PREFIX=/shared
@@ -87,11 +87,11 @@ cd /shared
 
 # Install Ceres
 if [ ! -d "/shared/ceres" ]; then
-  wget ceres-solver.org/ceres-solver-2.0.0.tar.gz -P /shared
+  wget ceres-solver.org/ceres-solver-2.0.0.tar.gz
   tar zxf ceres-solver-2.0.0.tar.gz
   rm ceres-solver-2.0.0.tar.gz
-  mv ceres-solver-2.0.0 /shared/ceres
-  cd /shared/ceres
+  mv ceres-solver-2.0.0 ceres
+  cd ceres
   mkdir build && cd build
   cmake .. -DCMAKE_INSTALL_PREFIX=/shared -DBUILD_EXAMPLES=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_TESTING=OFF -DSUITESPARSE_INCLUDE_DIR_HINTS=/shared/include -DSUITESPARSE_LIBRARY_DIR_HINTS=/shared/lib
   make -j4

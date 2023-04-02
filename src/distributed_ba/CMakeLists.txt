@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(distributed_bundle_adjustment VERSION 1.0)
+project(distributed_ba VERSION 1.0)
 
 set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_STANDARD 17)
@@ -8,11 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DNUM_INTRINSICS_PARAMS=1)
 add_definitions(-DNUM_DISTORTION_PARAMS=2)
 
-find_package(Ceres REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(Ceres REQUIRED HINTS "/shared/lib/cmake/Ceres")
 find_package(Eigen3 REQUIRED)
-find_package(GTest CONFIG REQUIRED)
-find_package(Glog 0.4.0 EXACT REQUIRED) # For some reason Glog cannot be found (but dependency on ceres fixes it)
-find_package(Gflags REQUIRED)
+find_package(GTest CONFIG REQUIRED HINTS "/shared/lib/cmake/GTest")
+find_package(Glog 0.4.0 EXACT REQUIRED HINTS "/shared/lib/cmake/glog") # For some reason Glog cannot be found (but dependency on ceres fixes it)
+find_package(Gflags REQUIRED HINTS "/shared/lib/cmake/gflags")
 find_package(MPI REQUIRED)
 
 include_directories(AFTER include)
@@ -81,3 +82,5 @@ target_link_libraries(test_reprojection GTest::gtest GTest::gmock ${ADDED_LIBRAR
 
 add_executable(test_consensus test/test_consensus_error.cpp)
 target_link_libraries(test_consensus GTest::gtest GTest::gmock ${ADDED_LIBRARIES})
+
+ament_package()
