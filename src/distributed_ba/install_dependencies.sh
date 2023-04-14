@@ -11,6 +11,7 @@ while sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1 ; do
 done
 if [ -f /var/log/unattended-upgrades/unattended-upgrades.log ]; then
   while sudo fuser /var/log/unattended-upgrades/unattended-upgrades.log >/dev/null 2>&1 ; do
+  echo "idk"
     sleep 1
   done
 fi
@@ -31,11 +32,13 @@ cd /shared
 
 # Install Suitesparse
 # TODO: if this works we need to dismiss the compilation of the graphblas as this takes a shitload of time and is not used!
+
+# First install openBLAS w/ apt install
 if [ ! -d "/shared/SuiteSparse" ]; then
   wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.1.2.zip
   unzip v5.1.2.zip
-  rm v5.1.2.zip
-  mv SuiteSparse-5.1.2 SuiteSparse
+  rm v5.1.2.zip 
+  mv SuiteSparse-5.1.2 SuiteSparse # cd SuiteSparse
   make library
   make install INSTALL=/shared
 fi
@@ -86,6 +89,13 @@ fi
 cd /shared
 
 # Install Ceres
+
+# ceres/cmake/FindTBB.cmake line 434
+# file(STRINGS
+#      "${TBB_INCLUDE_DIR}/oneapi/tbb/version.h"
+#      TBB_VERSION_CONTENTS
+#      REGEX "VERSION")
+
 if [ ! -d "/shared/ceres" ]; then
   wget ceres-solver.org/ceres-solver-2.0.0.tar.gz
   tar zxf ceres-solver-2.0.0.tar.gz
