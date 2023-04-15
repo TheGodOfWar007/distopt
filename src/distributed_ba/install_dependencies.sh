@@ -74,6 +74,7 @@ fi
 cd /shared
 
 # Install glog
+# sudo apt install glog
 if [ ! -d "/shared/glog" ]; then
   wget https://github.com/google/glog/archive/refs/tags/v0.4.0.zip
   unzip v0.4.0.zip

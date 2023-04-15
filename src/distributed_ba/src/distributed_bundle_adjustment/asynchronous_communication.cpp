@@ -134,6 +134,11 @@ AsynchronousCoordinator::~AsynchronousCoordinator() {
   MPI_Win_free(&flag_window_);
 }
 
+/// @brief initialize data buffers for ADMM
+/// @details iterate through every edge in the buffer, compute number of frames and map points,
+/// and fills values by iterating through every frame and map point, checking if each data point
+/// is valid and replacing the value with -1.0 if not
+/// @return 
 auto AsynchronousCoordinator::initializeBuffers() -> void {
   for (auto& [edge, data_storage] : data_buffer_map_) {
     const auto& [id_this, id_neigh] = edge;
@@ -198,6 +203,9 @@ auto AsynchronousCoordinator::initializeBuffers() -> void {
   }
 }
 
+/// @brief main loop of AsynchronousCoordinator process
+/// @details run the coordinated distributed optimization process in a separate thread and update counter and buffers and send updates to appropriate nodes
+/// @return 
 auto AsynchronousCoordinator::mainThread() -> void {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -290,6 +298,8 @@ auto AsynchronousCoordinator::mainThread() -> void {
   debug_timer_file.close();
 }
 
+/// @brief update iteration counter used to track latest iteration of all nodes
+/// @return boolean of whether the counter was updated or not
 auto AsynchronousCoordinator::updateCounter() -> bool {
   constexpr int target_rank = 0;
   constexpr int memory_offset_read = 0;
@@ -315,6 +325,9 @@ auto AsynchronousCoordinator::updateBuffers() -> void {
   }
 }
 
+/// @brief send latest state updates to neighboring nodes of input Node
+/// @param node_id input Node's id
+/// @return 
 auto AsynchronousCoordinator::sendUpdates(const uint64_t& node_id) -> void {
   auto data_ptr = data_map_[node_id];
   CHECK(data_ptr != nullptr);
@@ -343,6 +356,11 @@ auto AsynchronousCoordinator::sendUpdates(const uint64_t& node_id) -> void {
   }
 }
 
+/// @brief check input buffer for updates for input Edge and update if so
+/// @details check if there are any pending messages in the MPI communication buffer for a given edge and updates the provided buffer with the received data if there is a pending message
+/// @param id input edge
+/// @param buffer input buffer
+/// @return 
 auto AsynchronousCoordinator::checkAndUpdateBuffer(const EdgeId& id,
                                                    std::vector<double>& buffer)
     -> bool {
@@ -473,6 +491,8 @@ AsynchronousCommunication::~AsynchronousCommunication() {
   MPI_Win_free(&flag_window_);
 }
 
+/// @brief 
+/// @return 
 auto AsynchronousCommunication::mainThread() -> void {
   // Block until the start command (from Node 0) is received
   MPI_Barrier(MPI_COMM_WORLD);
@@ -543,6 +563,9 @@ auto AsynchronousCommunication::mainThread() -> void {
   MPI_Win_unlock(local_rank_other, finish_flag_window_);
 }
 
+/// @brief perform Data communication between Nodes
+/// @details send Data to all neighbors by copying it to a local buffer
+/// @return 
 auto AsynchronousCommunication::communicateData() -> void {
   const size_t num_neighbors = neighbor_ids_.size() - 1;
   if (!has_outgoing_data_) {
@@ -626,6 +649,11 @@ auto AsynchronousCommunication::communicateData() -> void {
   }
 }
 
+/// @brief update Node using recevied Duals from neighboring Nodes
+/// @details signal that it is ready to receive updates, receive updated
+/// duals for each neighboring Node for Frames and MapPoints, and update
+/// corresponding objects
+/// @return 
 auto AsynchronousCommunication::updateReceivedDuals() -> void {
   // Signal the coordinator that we want to receive the updates
   const int local_rank_other = 0;  // Central Communicator
@@ -704,6 +732,10 @@ auto AsynchronousCommunication::updateReceivedDuals() -> void {
   }
 }
 
+/// @brief update Duals for all Frames and MapPoints
+/// @details iterate over all Frames and MapPoints, call updateDualVariables
+/// for each, updating all dual variables
+/// @return 
 auto AsynchronousCommunication::updateDuals() -> void {
   const auto& frame_ids = data_ptr_->getFrameIds();
   for (const auto& id : frame_ids) {

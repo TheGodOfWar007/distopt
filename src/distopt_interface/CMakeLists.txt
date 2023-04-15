@@ -28,6 +28,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
 	"msg/NodeData.msg"
+  "msg/Residual.msg"
 	DEPENDENCIES geometry_msgs
 )
 

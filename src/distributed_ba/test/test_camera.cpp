@@ -14,6 +14,9 @@ std::default_random_engine rand_engine(r());
 
 constexpr size_t num_tests = 100;
 
+/// @brief 
+/// @param  
+/// @param  
 TEST(SimplePinholeCamera, point_jacobian) {
   for (size_t t = 0; t < num_tests; ++t) {
     std::uniform_real_distribution<double> uniform_dist_point(-15.0, 15);

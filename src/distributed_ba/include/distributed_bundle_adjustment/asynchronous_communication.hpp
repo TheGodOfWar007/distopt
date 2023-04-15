@@ -12,39 +12,69 @@
 #include "distributed_bundle_adjustment/data.hpp"
 #include "distributed_bundle_adjustment/optimization.hpp"
 
+/// @brief writing to dba namespace
 namespace dba {
 
+/// @brief AsynchronousCoordinator class definition
+/// @details coordinates distributed optimization process
 class AsynchronousCoordinator {
  public:
+  /// @brief PoseDual type alias with kNumIntrinsicParams and kNumDistortionParams
   using FrameDual = PoseDual<kNumIntrinsicParams, kNumDistortionParams>;
+  /// @brief type alias for shared pointer to a Data object
   using DataSharedPtrVector = std::vector<DataSharedPtr>;
+  /// @brief map of DataIds to DataSharedPtrs
   using DataIdMap = std::unordered_map<uint64_t, DataSharedPtr>;
+  /// @brief type alias for pair of two DataIds
   using EdgeId = std::pair<uint64_t, uint64_t>;
+  /// @brief map of EdgIds to some DataType using pair_hash hashing function
+  /// @tparam DataType 
   template <class DataType>
   using EdgeToDataMap = std::unordered_map<EdgeId, DataType, pair_hash>;
 
  public:
+  /// @brief delete default AsynchronousCoordinator constructor
   AsynchronousCoordinator() = delete;
+  /// @brief AsynchronousCoordinator constructor declaration
+  /// @param data data input
   AsynchronousCoordinator(const DataSharedPtrVector& data);
+  /// @brief AsynchronousCoordinator class destroyer
   ~AsynchronousCoordinator();
 
  private:
+  /// @brief initialize MessagePassingInterface windows for the buffers used by the Async Coordinator
+  /// @return
   auto initializeBuffers() -> void;
 
+  /// @brief main loop for AsynchronousCoorindator process
+  /// @details run the coordinated distributed optimization process in a separate thread and update counter and buffers and send updates to appropriate nodes
+  /// @return 
   auto mainThread() -> void;
 
+/// @brief update iteration counter used to track latest iteration of all nodes
+/// @return boolean of whether the counter was updated or not
   auto updateCounter() -> bool;
 
+  /// @brief check graph edges if updates are required
+  /// @return 
   auto updateBuffers() -> void;
 
+  /// @brief check if the input buffer with a desired Edge needs to be updated and update if needed
+  /// @param id EdgeId
+  /// @param buffer 
+  /// @return 
   auto checkAndUpdateBuffer(const EdgeId& id, std::vector<double>& buffer)
       -> bool;
 
+  /// @brief send updates to neighbors of Node with node_id
+  /// @param node_id
+  /// @return 
   auto sendUpdates(const uint64_t& node_id) -> void;
 
   // Useful handles
   int world_size_;
 
+  /// @brief DataIdMap mapping DataIds to DataSharedPtrs
   DataIdMap data_map_;
 
   // Storage for maintaining the iteration counts
@@ -65,23 +95,44 @@ class AsynchronousCoordinator {
   EdgeToDataMap<MPI_Comm> communicator_map_;
 };
 
+/// @brief AsynchronousCommunication class definition
+/// @details responsible for communication between nodes
 class AsynchronousCommunication {
  public:
+  /// @brief PoseDual type alias with kNumIntrinsicParams and kNumDistortionParams
   using FrameDual = PoseDual<kNumIntrinsicParams, kNumDistortionParams>;
 
  public:
+  /// @brief delete default AsynchronousCoordinator constructor
   AsynchronousCommunication() = delete;
+  /// @brief AsynchronousCoordinator constructor declaration
+  /// @param data data input
   AsynchronousCommunication(DataSharedPtr data_ptr,
                             DataSharedPtr data_copy_ptr);
+  /// @brief AsynchronousCoordinator class destroyer
   ~AsynchronousCommunication();
 
  private:
+  /// @brief main loop of AsynchronousCommunication process
+  /// @return 
   auto mainThread() -> void;
 
+  /// @brief perform Data communication between Nodes
+  /// @details send Data to all neighbors by copying it to a local buffer
+  /// @return 
   auto communicateData() -> void;
 
+  /// @brief update Node using recevied Duals from neighboring Nodes
+  /// @details signal that it is ready to receive updates, receive updated
+  /// duals for each neighboring Node for Frames and MapPoints, and update
+  /// corresponding objects
+  /// @return 
   auto updateReceivedDuals() -> void;
 
+  /// @brief update Duals for all Frames and MapPoints
+  /// @details iterate over all Frames and MapPoints, call updateDualVariables
+  /// for each, updating all dual variables
+  /// @return 
   auto updateDuals() -> void;
 
   auto writeOutStatus() -> void;
