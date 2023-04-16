@@ -27,7 +27,7 @@ class AsynchronousCoordinator {
   using DataIdMap = std::unordered_map<uint64_t, DataSharedPtr>;
   /// @brief type alias for pair of two DataIds
   using EdgeId = std::pair<uint64_t, uint64_t>;
-  /// @brief map of EdgIds to some DataType using pair_hash hashing function
+  /// @brief map of EdgeIds to some DataType using pair_hash hashing function
   /// @tparam DataType 
   template <class DataType>
   using EdgeToDataMap = std::unordered_map<EdgeId, DataType, pair_hash>;

@@ -6,10 +6,14 @@
 
 #include "distributed_bundle_adjustment/common.hpp"
 
+/// @brief add to dba namespace
 namespace dba {
 
+/// @brief add to cost_functions namespace
 namespace cost_functions {
 
+/// @brief class declaration of cost function enforcing consensus of Duals using L2 norm
+/// @tparam N 
 template <int N>
 class DecentralEuclideanConsensus : public ceres::SizedCostFunction<N, N> {
  public:

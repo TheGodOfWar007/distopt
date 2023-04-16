@@ -31,6 +31,9 @@ DECLARE_double(alpha_translation);
 
 namespace dba {
 
+/// @brief constructor for Optimization class
+/// @param data_ptr shared Data Ptr to data to use
+/// @param consensus_type consensus algorithm to use
 Optimization::Optimization(DataSharedPtr data_ptr,
                            const ConsensusType& consensus_type)
     : ceres_problem_(nullptr),
@@ -54,6 +57,8 @@ Optimization::Optimization(DataSharedPtr data_ptr,
 
 Optimization::~Optimization() {}
 
+/// @brief setup the optimization problem
+/// @return 
 auto Optimization::setupProblem() -> bool {
   const auto neighbors = data_ptr_->getNeighbors();
   if (ceres_problem_ != nullptr) return true;
@@ -514,6 +519,11 @@ auto Optimization::performOptimization() -> bool {
   return true;
 }
 
+/// @brief update Frame and MapPoint averages
+/// @param frame_avgs 
+/// @param map_point_avgs 
+/// @param synchronized boolean value that presumably indicates if all Frames/MapPoints are synchronized
+/// @return 
 auto Optimization::updateAverages(
     const std::unordered_map<uint64_t, FrameDual>& frame_avgs,
     const std::unordered_map<uint64_t, MapPointDual>& map_point_avgs,
@@ -542,16 +552,19 @@ auto Optimization::updateAverages(
     std::cout << "map_point_ids.empty()" << std::endl;
     return false;
   }
+
+  // Remove all consensus residual blocks and clear the consensus residual block ids
   for (const auto& id : consensus_resids_)
     ceres_problem_->RemoveResidualBlock(id);
   consensus_resids_.clear();
 
-  // Re-add the map point terms
+  // Re-add the map point terms 
   for (const uint64_t id : map_point_ids) {
     Eigen::Vector3d dual_var_vec;
     Eigen::Vector3d average_pos;
     auto map_point_ptr = data_ptr_->getMapPoint(id);
     CHECK(map_point_ptr != nullptr);
+    // if synchronized and the average value is present
     if (map_point_avgs.count(id) && synchronized) {
       // Compute the primal residuals (local state - average_last)
       MapPointDual primal_res;
@@ -591,24 +604,34 @@ auto Optimization::updateAverages(
         average_pos[i] = avg[i];
       }
       map_point_ptr->setCentralDual(dual);
-    } else if (map_point_avgs.count(id) && !synchronized) {
+    } else if (map_point_avgs.count(id) && !synchronized) { // if the average is present but not synchronized
+      // Retrieve Dual without updating average
       MapPointDual dual;
       CHECK(map_point_ptr->getCentralDual(dual));
       for (size_t i = 0; i < dual.getSize(); ++i) {
         dual_var_vec[i] = dual[i];
         average_pos[i] = map_point_ptr->average_state_[i];
       }
-    } else {
+    } else { // if map point average is not present
+      // Set average to current map point position and Dual variable to 0
       average_pos = map_point_ptr->position_;
       dual_var_vec.setZero();
     }
+
+    // Create new consensus of map_point using CentralEuclideanConsensus cost function
     ceres::CostFunction* map_point_consensus =
         new cost_functions::CentralEuclideanConsensus<3>(
             map_point_ptr->sigma_, average_pos, dual_var_vec);
+    // Add residual block
     const auto resid_id = ceres_problem_->AddResidualBlock(
         map_point_consensus, NULL, map_point_ptr->position_.data());
+    // add residual ID to consensus_resids_
     consensus_resids_.insert(resid_id);
   }
+
+  // Iterate over frame_ids:
+  // If the frame is invalid, remove from Ceres problem
+  // Else, give a camera ptr, camera frame, and distortion value
 
   for (const uint64_t id : frame_ids) {
     auto frame_ptr = data_ptr_->getFrame(id);
@@ -661,7 +684,10 @@ auto Optimization::updateAverages(
       const auto& avg = frame_avgs.at(id);
 
       FrameDual dual_res;
+      // r : residual
+      // t : pos, q : rot, i : intrinsics, d : distortion
       double r_t = 0.0, r_q = 0.0, r_i = 0.0, r_d = 0.0;
+      // s : sigma term
       double s_t = 0.0, s_q = 0.0, s_i = 0.0, s_d = 0.0;
       for (size_t i = 0; i < dual_res.getSize(); ++i) {
         if (i < 3) {
@@ -755,10 +781,12 @@ auto Optimization::updateAverages(
       CHECK(frame_ptr->getCentralDual(dual));
       utils::rotmath::Minus(frame_ptr->q_W_C_,
                             frame_ptr->getReferenceRotation(), &state_q_W_C);
+                            
+      // Update (?)
       for (size_t i = 0; i < dual.getSize(); ++i) {
         frame_ptr->average_state_[i] = avg[i];
         if (i < 3) {
-          // Translation
+          // Translation resdual calculation
           dual[i] += (frame_ptr->p_W_C_[i] - avg[i]) * (1.0 + FLAGS_alpha);
           dual[i] /= fact_t;
           dual_p_W_C[i] = dual[i];
@@ -836,6 +864,7 @@ auto Optimization::updateAverages(
       avg_intr = frame_ptr->intrinsics_;
       avg_dist = frame_ptr->dist_coeffs_;
     }
+    // Translation consensus:
     ceres::CostFunction* translation_consensus =
         new cost_functions::CentralEuclideanConsensus<3>(
             frame_ptr->sigma_trans_, avg_p_W_C, dual_p_W_C);
@@ -843,6 +872,7 @@ auto Optimization::updateAverages(
         translation_consensus, NULL, frame_ptr->p_W_C_.data());
 
     consensus_resids_.insert(trans_resid_id);
+    // Rotation consensus:
     ceres::CostFunction* rotation_consensus =
         new cost_functions::CentralRotationConsensus(
             frame_ptr->sigma_rot_, frame_ptr->getReferenceRotation(), avg_q_W_C,
@@ -933,6 +963,8 @@ auto Optimization::updateAverages(
   return true;
 }
 
+/// @brief update Dual variables of optimization problem using decentralized algorithm
+/// @return 
 auto Optimization::updateDuals() -> bool {
   if (ceres_problem_ == nullptr) return false;
   if (consensus_resids_.empty()) return false;
@@ -1160,6 +1192,8 @@ auto Optimization::updateDuals() -> bool {
   }
 }
 
+/// @brief compute residuals for all constraints
+/// @return vector of residual values for the problem
 auto Optimization::computeErrors() -> std::vector<double> {
   std::vector<double> result;
   if (ceres_problem_ == nullptr) {
@@ -1187,6 +1221,13 @@ auto Optimization::computeErrors() -> std::vector<double> {
   return result;
 }
 
+/// @brief check the residual of a desired frame
+/// @details retrieve frame observations and check if empty, and if not,
+/// retrieve the camera. for each observation, retrieve the MapPoints and
+/// calculate 3D MapPoint position in camera frame and project this point
+/// in the image frame, then calculate the resulting residual!
+/// @param frame_id frame to check
+/// @return 
 auto Optimization::checkFrame(const uint64_t frame_id) -> double {
   auto frame_ptr = data_ptr_->getFrame(frame_id);
   CHECK(frame_ptr != nullptr);
