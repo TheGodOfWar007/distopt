@@ -6,6 +6,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+// uncomment once we've written our async comm file
 #include "distributed_bundle_adjustment/asynchronous_communication.hpp"
 #include "distributed_bundle_adjustment/common.hpp"
 #include "distributed_bundle_adjustment/data.hpp"
