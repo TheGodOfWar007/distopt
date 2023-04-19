@@ -494,9 +494,9 @@ auto AsynchronousCommunication::mainThread() -> void {
     auto time1 = std::chrono::high_resolution_clock::now();
     updateReceivedDuals();
     auto time2 = std::chrono::high_resolution_clock::now();
-    optimization_ptr_->performOptimization();
+    optimization_ptr_->performOptimization(); // This is equation 8, This solves all nodes of the local graph of an agent.
     auto time3 = std::chrono::high_resolution_clock::now();
-    updateDuals();
+    updateDuals(); // Equation 9 and 10 (and 11 too)
     auto time4 = std::chrono::high_resolution_clock::now();
     communicateData();
     auto time5 = std::chrono::high_resolution_clock::now();
