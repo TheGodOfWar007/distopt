@@ -5,9 +5,9 @@
 #include <thread>
 #include <vector>
 
-#include "distributed_bundle_adjustment/common.hpp"
-#include "distributed_bundle_adjustment/data.hpp"
-#include "distributed_bundle_adjustment/optimization.hpp"
+#include "distopt/common.hpp"
+#include "distopt/data.hpp"
+#include "distopt/optimization.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 #include "distopt_interface/msg/node_data.hpp"

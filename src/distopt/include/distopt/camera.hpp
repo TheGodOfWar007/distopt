@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 #include <memory>
 
-#include "distributed_bundle_adjustment/distortion.hpp"
+#include "distopt/distortion.hpp"
 
 namespace dba {
 

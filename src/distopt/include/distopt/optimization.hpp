@@ -2,8 +2,8 @@
 
 #include <ceres/ceres.h>
 
-#include "distributed_bundle_adjustment/common.hpp"
-#include "distributed_bundle_adjustment/data.hpp"
+#include "distopt/common.hpp"
+#include "distopt/data.hpp"
 
 /// @brief add to dba namepsace
 namespace dba {

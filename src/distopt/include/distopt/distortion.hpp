@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 #include <memory>
 
-#include "distributed_bundle_adjustment/common.hpp"
+#include "distopt/common.hpp"
 
 namespace dba {
 

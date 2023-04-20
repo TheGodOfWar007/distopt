@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "distributed_bundle_adjustment/common.hpp"
+#include "distopt/common.hpp"
 
 namespace dba {
 

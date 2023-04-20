@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "distributed_bundle_adjustment/frame.hpp"
-#include "distributed_bundle_adjustment/map_point.hpp"
+#include "distopt/frame.hpp"
+#include "distopt/map_point.hpp"
 
 /// @brief adding to dba namespace
 namespace dba {

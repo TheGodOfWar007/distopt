@@ -7,11 +7,11 @@
 #include "rclcpp/rclcpp.hpp"
 
 // uncomment once we've written our async comm file
-#include "distributed_bundle_adjustment/asynchronous_communication.hpp"
-#include "distributed_bundle_adjustment/common.hpp"
-#include "distributed_bundle_adjustment/data.hpp"
-#include "distributed_bundle_adjustment/distortion.hpp"
-#include "distributed_bundle_adjustment/optimization.hpp"
+#include "distopt/asynchronous_communication.hpp"
+#include "distopt/common.hpp"
+#include "distopt/data.hpp"
+#include "distopt/distortion.hpp"
+#include "distopt/optimization.hpp"
 
 DECLARE_string(admm_type);
 DECLARE_string(data_folder);

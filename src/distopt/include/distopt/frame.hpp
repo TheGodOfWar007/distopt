@@ -5,9 +5,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "distributed_bundle_adjustment/camera.hpp"
-#include "distributed_bundle_adjustment/common.hpp"
-#include "distributed_bundle_adjustment/distortion.hpp"
+#include "distopt/camera.hpp"
+#include "distopt/common.hpp"
+#include "distopt/distortion.hpp"
 
 namespace dba {
 
