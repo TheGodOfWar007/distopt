@@ -29,7 +29,13 @@ find_package(ament_cmake_gtest REQUIRED)
 
 add_definitions(--std=c++0x -Wall -Wextra -pedantic)
 
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIRS})
+
 add_library(${PROJECT_NAME} src/eigen-checks.cc)
+
+
+include_directories(AFTER include)
 
 find_package (Threads)
 ament_add_gtest(test_gtest_near

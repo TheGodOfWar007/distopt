@@ -781,8 +781,9 @@ auto Optimization::updateAverages(
       CHECK(frame_ptr->getCentralDual(dual));
       utils::rotmath::Minus(frame_ptr->q_W_C_,
                             frame_ptr->getReferenceRotation(), &state_q_W_C);
-                            
+
       // Update (?)
+      // (9) (10)
       for (size_t i = 0; i < dual.getSize(); ++i) {
         frame_ptr->average_state_[i] = avg[i];
         if (i < 3) {

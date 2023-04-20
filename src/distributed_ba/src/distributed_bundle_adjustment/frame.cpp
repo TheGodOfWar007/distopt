@@ -111,6 +111,7 @@ auto Frame::updateDualVariables() -> bool {
   Eigen::Map<Eigen::Matrix<double, kNumDistortionParams, 1>> dual_dist(
       x_lambda.getDistortion());
   dual_dist = lambda_dist_ * dist_coeffs_;
+  // Equations (8) (9) (10)
   for (const auto& [id, z_hat_i] : z_hat_) {
     CHECK(z_.count(id));
     auto& z_i = z_[id];

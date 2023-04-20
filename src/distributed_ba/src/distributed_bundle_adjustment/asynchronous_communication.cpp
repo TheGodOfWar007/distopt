@@ -326,7 +326,7 @@ auto AsynchronousCoordinator::updateBuffers() -> void {
 }
 
 /// @brief send latest state updates to neighboring nodes of input Node
-/// @param node_id input Node's id
+/// @param node_id input Node's id (agent's own ID)
 /// @return 
 auto AsynchronousCoordinator::sendUpdates(const uint64_t& node_id) -> void {
   auto data_ptr = data_map_[node_id];

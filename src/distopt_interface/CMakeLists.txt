@@ -12,10 +12,10 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
+find_package(rclcpp REQUIRED HINTS "/opt/ros/humble/include/rclcpp/")
 find_package(Ceres REQUIRED HINTS "/shared/lib/cmake/Ceres")
 find_package(Eigen3 REQUIRED)
 find_package(GTest CONFIG REQUIRED HINTS "/shared/lib/cmake/GTest")
