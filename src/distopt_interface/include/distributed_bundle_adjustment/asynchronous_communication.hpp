@@ -10,12 +10,12 @@
 #include "distributed_bundle_adjustment/optimization.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-#include "msg/node_data.hpp"
-#include "msg/update.hpp"
-#include "msg/finish_flag.hpp"
-#include "msg/flag.hpp"
-#include "msg/counter.hpp"
-#include "msg/update.hpp"
+#include "distopt_interface/msg/node_data.hpp"
+#include "distopt_interface/msg/finish_flag.hpp"
+#include "distopt_interface/msg/flag.hpp"
+#include "distopt_interface/msg/counter.hpp"
+#include "distopt_interface/msg/update.hpp"
+#include "distopt_interface/msg/residual.hpp"
 
 /// @brief writing to dba namespace
 namespace dba {
@@ -155,7 +155,7 @@ class AsynchronousCommunication {
 
   // Store requests to allow for sending while performing other operations
   bool has_outgoing_data_;
-  std::vector<rclcpp::Client<srv::DataTransfer>::SharedPtr> outgoing_comm_;
+  // std::vector<rclcpp::Client<distopt_interface::srv::DataTransfer>::SharedPtr> outgoing_comm_;
   std::unordered_map<uint64_t, std::vector<double>> outgoing_buffer_;
 
   // Keep a flag array to check whether a node has finished
