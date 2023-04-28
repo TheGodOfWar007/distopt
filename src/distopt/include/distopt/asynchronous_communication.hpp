@@ -42,7 +42,7 @@ class AsynchronousCoordinator {
   AsynchronousCoordinator() = delete;
   /// @brief AsynchronousCoordinator constructor declaration
   /// @param data data input
-  AsynchronousCoordinator(const DataSharedPtrVector& data, const std::string& node_name);
+  AsynchronousCoordinator(const DataSharedPtrVector& data);
   /// @brief AsynchronousCoordinator class destroyer
   ~AsynchronousCoordinator();
 

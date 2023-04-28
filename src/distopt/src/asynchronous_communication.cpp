@@ -5,8 +5,8 @@
 #include <iomanip>
 #include <queue>
 
-#include "distributed_bundle_adjustment/asynchronous_communication.hpp"
-#include "distributed_bundle_adjustment/common.hpp"
+#include "distopt/asynchronous_communication.hpp"
+#include "distopt/common.hpp"
 
 namespace filesystem = std::experimental::filesystem;
 
@@ -31,6 +31,8 @@ AsynchronousCoordinator::AsynchronousCoordinator(
 
   // Create a world group in order to enable the construction of the pairwise
   // communicators with the neighbors later.
+
+  // TODO: Replace MPI
   MPI_Comm_size(MPI_COMM_WORLD, &world_size_);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -43,7 +45,7 @@ AsynchronousCoordinator::AsynchronousCoordinator(
   // Create the window for storing the global counts of the iterations
   MPI_Win_allocate(num_nodes * sizeof(int), sizeof(int), MPI_INFO_NULL,
                    MPI_COMM_WORLD, &counter_storage_, &counter_window_);
-  std::vector<int> counter_init(num_nodes, 0); // vector of num_nodes 0s...
+  std::vector<int> counter_init(num_nodes, 0);
   MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, counter_window_);
   MPI_Accumulate(counter_init.data(), num_nodes, MPI_INT, rank,
                  memory_offset_this, num_nodes, MPI_INT, MPI_REPLACE,
