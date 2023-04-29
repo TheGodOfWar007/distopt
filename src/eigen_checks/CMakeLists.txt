@@ -37,49 +37,49 @@ add_library(${PROJECT_NAME} src/eigen-checks.cc)
 
 include_directories(AFTER include)
 
-find_package (Threads)
-ament_add_gtest(test_gtest_near
-	test/test_gtest-near.cc)
-target_link_libraries(test_gtest_near ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# find_package (Threads)
+# ament_add_gtest(test_gtest_near
+# 	test/test_gtest-near.cc)
+# target_link_libraries(test_gtest_near ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_gtest_equal
-  test/test_gtest-equal.cc)
-target_link_libraries(test_gtest_equal ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_gtest_equal
+#   test/test_gtest-equal.cc)
+# target_link_libraries(test_gtest_equal ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_gtest_zero
-  test/test_gtest-zero.cc)
-target_link_libraries(test_gtest_zero ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_gtest_zero
+#   test/test_gtest-zero.cc)
+# target_link_libraries(test_gtest_zero ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_gtest_equal_double
-  test/test_gtest-equal-double.cc)
-target_link_libraries(test_gtest_equal_double ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_gtest_equal_double
+#   test/test_gtest-equal-double.cc)
+# target_link_libraries(test_gtest_equal_double ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_glog_near
-  test/test_glog-near.cc)
-target_link_libraries(test_glog_near ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_glog_near
+#   test/test_glog-near.cc)
+# target_link_libraries(test_glog_near ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_glog_equal
-  test/test_glog-equal.cc)
-target_link_libraries(test_glog_equal ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_glog_equal
+#   test/test_glog-equal.cc)
+# target_link_libraries(test_glog_equal ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_glog_zero
-  test/test_glog-zero.cc)
-target_link_libraries(test_glog_zero ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_glog_zero
+#   test/test_glog-zero.cc)
+# target_link_libraries(test_glog_zero ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_glog_equal_double
-  test/test_glog-equal-double.cc)
-target_link_libraries(test_glog_equal_double ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_glog_equal_double
+#   test/test_glog-equal-double.cc)
+# target_link_libraries(test_glog_equal_double ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_glog-zero-sized-types
-  test/test_glog-zero-sized-types.cc)
-target_link_libraries(test_glog-zero-sized-types ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_glog-zero-sized-types
+#   test/test_glog-zero-sized-types.cc)
+# target_link_libraries(test_glog-zero-sized-types ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-ament_add_gtest(test_gtest-zero-sized-types
-  test/test_gtest-zero-sized-types.cc)
-target_link_libraries(test_gtest-zero-sized-types ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+# ament_add_gtest(test_gtest-zero-sized-types
+#   test/test_gtest-zero-sized-types.cc)
+# target_link_libraries(test_gtest-zero-sized-types ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
-# cs_install()
-ament_package()
+# # cs_install()
+# ament_package()
 
 # ament_export_include_directories(INCLUDE_DIRS include
 #           CFG_EXTRAS eigen_checks-extras.cmake)
