@@ -34,6 +34,8 @@ int main(int argc, char** argv) {
   CHECK_GT(world_size, 1);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  // What's the difference between these two??
   if (rank == 0) {
     // This is the coordinator and storage node
     const size_t num_nodes = world_size - 1;

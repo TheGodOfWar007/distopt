@@ -17,6 +17,7 @@ find_package(distopt_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(robopt_open REQUIRED)
 
 find_package(rclcpp REQUIRED HINTS "/opt/ros/humble/include/rclcpp/")
 find_package(Ceres REQUIRED HINTS "/shared/lib/cmake/Ceres")

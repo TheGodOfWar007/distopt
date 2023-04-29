@@ -1,6 +1,6 @@
 #include <glog/logging.h>
 
-#include "distributed_bundle_adjustment/pinhole_camera.hpp"
+#include "distopt/pinhole_camera.hpp"
 
 namespace dba {
 
