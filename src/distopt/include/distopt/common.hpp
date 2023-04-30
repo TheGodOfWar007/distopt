@@ -5,15 +5,19 @@
 #include <memory>
 #include <unordered_map>
 
+// only dealing with pose duals for now
+#define NUM_INTRINSICS_PARAMS 0
+#define NUM_DISTORTION_PARAMS 0
+
 #ifdef NUM_INTRINSICS_PARAMS
 constexpr size_t kNumIntrinsicParams = NUM_INTRINSICS_PARAMS;
 #else
-constexpr size_t kNumIntrinsicParams = 1;
+constexpr size_t kNumIntrinsicParams = 0;
 #endif
 #ifdef NUM_DISTORTION_PARAMS
 constexpr size_t kNumDistortionParams = NUM_DISTORTION_PARAMS;
 #else
-constexpr size_t kNumDistortionParams = 2;
+constexpr size_t kNumDistortionParams = 0;
 #endif
 
 constexpr size_t tagoffset_start = 0;
@@ -24,8 +28,18 @@ constexpr size_t tagoffset_worker_to_worker = 20000;
 
 static constexpr uint64_t key_multiplier = 5000;
 
+
+// TypeDefs for common use across the library
+using Timestamp = uint64_t;
+using AgentID = uint64_t;
+using NodeKey = std::pair<AgentID, Timestamp>;
+
 /// @brief definition of dba (distributed bundle adjustment) namespace
 namespace dba {
+
+  // TypeDefs in namespace dba
+  using Pose = PoseDual<kNumIntrinsicParams, kNumDistortionParams>;
+  using PoseDelta = PoseDual<kNumIntrinsicParams, kNumDistortionParams>;
 
 /// @brief structure returning a pair of hashed values
 struct pair_hash {
@@ -172,6 +186,11 @@ struct MapPointDual {
  private:
   uint64_t id_;
   double vars_[kNumParams];
+};
+
+struct PoseGraph {
+  private:
+    std::unordered_map<
 };
 
 /// @brief alias of a vector of Eigen Vector3 objects holding doubles
